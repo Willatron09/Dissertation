@@ -4,17 +4,6 @@ import pandas as pd
 import ast
 
 def load_raw_data(df, sampling_rate, path):
-    """
-    Load raw ECG data based on the sampling rate.
-
-    Parameters:
-        df (pd.DataFrame): DataFrame containing file paths.
-        sampling_rate (int): Sampling rate (100 or 500).
-        path (str): Base path to the data files.
-
-    Returns:
-        np.ndarray: Array of ECG signal data.
-    """
     if sampling_rate == 100:
         data = [wfdb.rdsamp(path+f) for f in df.filename_lr]
     else:
@@ -23,16 +12,7 @@ def load_raw_data(df, sampling_rate, path):
     return data
 
 def aggregate_diagnostic(y_dic, agg_df):
-    """
-    Aggregate diagnostic classes based on scp_codes.
-
-    Parameters:
-        y_dic (dict): Dictionary of scp_codes.
-        agg_df (pd.DataFrame): DataFrame containing diagnostic aggregation information.
-
-    Returns:
-        list: List of diagnostic classes.
-    """
+   
     tmp = []
     for key in y_dic.keys():
         if key in agg_df.index:
@@ -40,16 +20,7 @@ def aggregate_diagnostic(y_dic, agg_df):
     return list(set(tmp))
 
 def prepare_data(base_path, sampling_rate=100):
-    """
-    Prepare ECG and patient data for further use.
-
-    Parameters:
-        base_path (str): Base path to the data files.
-        sampling_rate (int): Sampling rate (default is 100).
-
-    Returns:
-        tuple: Tuple containing ECG data (np.ndarray) and patient data (pd.DataFrame).
-    """
+    
     # Load and convert annotation data
     Y = pd.read_csv(base_path + r'ptbxl_database.csv', index_col='ecg_id')
     Y.scp_codes = Y.scp_codes.apply(lambda x: ast.literal_eval(x))
@@ -85,15 +56,7 @@ def loader(base_path, sampling_rate=100):
 ## This next bit maps the classes
 
 def map_classes(patient_data):
-    """
-    Map patient_data['class'] to the 5 specified classes: 'NORM', 'MI', 'STTC', 'CD', 'HYP'.
-    
-    Parameters:
-        patient_data (pd.DataFrame): DataFrame containing a 'class' column with lists of diagnostic classes.
-
-    Returns:
-        patient_data: With an additional column 'mapped_class' containing the mapped class labels.
-    """
+   
     class_mapping = {
         'NORM': 'Normal ECG',
         'MI': 'Myocardial Infarction',
